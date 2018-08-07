@@ -39,7 +39,7 @@ Page({
     var me = this;
     var serverUrl = app.serverUrl;
     wx.showLoading({
-      title: '请等待，加载中...',
+      title: '正在加载中...',
     });
 
     var searchContent = me.data.searchContent;
