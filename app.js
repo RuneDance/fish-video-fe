@@ -1,6 +1,6 @@
 //app.js
 App({
-  //serverUrl: "http://192.168.1.2:8081",
+  //本地局域网IP
   serverUrl: "http://172.18.97.159:8081",
   userInfo: null,
 
