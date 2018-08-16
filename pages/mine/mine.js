@@ -32,77 +32,77 @@ Page({
 
   },
 
-  onLoad: function (params) {
-    var me = this;
+  // onLoad: function (params) {
+  //   var me = this;
 
-    // var user = app.userInfo;
-    // fixme 修改原有的全局对象为本地缓存
-    var user = app.getGlobalUserInfo();
-    var userId = user.id;
+  //   // var user = app.userInfo;
+  //   // fixme 修改原有的全局对象为本地缓存
+  //   var user = app.getGlobalUserInfo();
+  //   var userId = user.id;
 
-    var publisherId = params.publisherId;
-    if (publisherId != null && publisherId != '' && publisherId != undefined) {
-      userId = publisherId;
-      me.setData({
-        isMe: false,
-        publisherId: publisherId,
-        serverUrl: app.serverUrl
-      })
-    }
-    me.setData({
-      userId: userId
-    })
-
-
-    wx.showLoading({
-      title: '请等待...',
-    });
-    var serverUrl = app.serverUrl;
-    // 调用后端
-    wx.request({
-      url: serverUrl + '/user/query?userId=' + userId + "&fanId=" + user.id,
-      method: "POST",
-      header: {
-        'content-type': 'application/json', // 默认值
-        'headerUserId': user.id,
-        'headerUserToken': user.userToken
-      },
-      success: function (res) {
-        console.log(res.data);
-        wx.hideLoading();
-        if (res.data.status == 200) {
-          var userInfo = res.data.data;
-          var faceUrl = "../resource/images/noneface.png";
-          if (userInfo.faceImage != null && userInfo.faceImage != '' && userInfo.faceImage != undefined) {
-            faceUrl = serverUrl + userInfo.faceImage;
-          }
+  //   var publisherId = params.publisherId;
+  //   if (publisherId != null && publisherId != '' && publisherId != undefined && publisherId != userId) {
+  //     userId = publisherId;
+  //     me.setData({
+  //       isMe: false,
+  //       publisherId: publisherId,
+  //       serverUrl: app.serverUrl
+  //     })
+  //   }
+  //   me.setData({
+  //     userId: userId
+  //   })
 
 
-          me.setData({
-            faceUrl: faceUrl,
-            fansCounts: userInfo.fansCounts,
-            followCounts: userInfo.followCounts,
-            receiveLikeCounts: userInfo.receiveLikeCounts,
-            nickname: userInfo.nickname,
-            isFollow: userInfo.follow
-          });
-        } else if (res.data.status == 502) {
-          wx.showToast({
-            title: res.data.msg,
-            duration: 3000,
-            icon: "none",
-            success: function () {
-              wx.redirectTo({
-                url: '../userLogin/login',
-              })
-            }
-          })
-        }
-      }
-    })
+  //   wx.showLoading({
+  //     title: '请等待...',
+  //   });
+  //   var serverUrl = app.serverUrl;
+  //   // 调用后端
+  //   wx.request({
+  //     url: serverUrl + '/user/query?userId=' + userId + "&fanId=" + user.id,
+  //     method: "POST",
+  //     header: {
+  //       'content-type': 'application/json', // 默认值
+  //       'headerUserId': user.id,
+  //       'headerUserToken': user.userToken
+  //     },
+  //     success: function (res) {
+  //       console.log(res.data);
+  //       wx.hideLoading();
+  //       if (res.data.status == 200) {
+  //         var userInfo = res.data.data;
+  //         var faceUrl = "../resource/images/noneface.png";
+  //         if (userInfo.faceImage != null && userInfo.faceImage != '' && userInfo.faceImage != undefined) {
+  //           faceUrl = serverUrl + userInfo.faceImage;
+  //         }
 
-    me.getMyVideoList(1);
-  },
+
+  //         me.setData({
+  //           faceUrl: faceUrl,
+  //           fansCounts: userInfo.fansCounts,
+  //           followCounts: userInfo.followCounts,
+  //           receiveLikeCounts: userInfo.receiveLikeCounts,
+  //           nickname: userInfo.nickname,
+  //           isFollow: userInfo.follow
+  //         });
+  //       } else if (res.data.status == 502) {
+  //         wx.showToast({
+  //           title: res.data.msg,
+  //           duration: 3000,
+  //           icon: "none",
+  //           success: function () {
+  //             wx.redirectTo({
+  //               url: '../userLogin/login',
+  //             })
+  //           }
+  //         })
+  //       }
+  //     }
+  //   })
+
+  //   me.getMyVideoList(1);
+  // },
 
   followMe: function (e) {
     var me = this;
@@ -204,7 +204,8 @@ Page({
         var userInfo = app.getGlobalUserInfo();
 
         wx.uploadFile({
-          url: serverUrl + '/user/uploadFace?userId=' + userInfo.id,  //app.userInfo.id,
+          url: 'http://192.168.1.2:8080/u/uploadFace?userId=1001',
+          // url: serverUrl + '/user/uploadFace?userId=' + userInfo.id,  //app.userInfo.id,
           filePath: tempFilePaths[0],
           name: 'file',
           header: {

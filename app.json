@@ -1,12 +1,12 @@
 {
   "pages": [
-    
+    "pages/mine/mine",
+    "pages/wxLogin/login",
     "pages/index/index",
     "pages/videoinfo/videoinfo",
     "pages/videotest/videotest",
     "pages/userLogin/login",
     "pages/report/report",
-    "pages/mine/mine",
     "pages/userRegist/regist",
     "pages/chooseBgm/chooseBgm",
     "pages/searchVideo/searchVideo"

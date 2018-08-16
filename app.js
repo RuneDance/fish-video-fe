@@ -4,11 +4,11 @@ App({
   serverUrl: "http://172.18.97.159:8081",
   userInfo: null,
 
-  setGlobalUserInfo: function (user) {
+  setGlobalUserInfo: function(user) {
     wx.setStorageSync("userInfo", user);
   },
 
-  getGlobalUserInfo: function () {
+  getGlobalUserInfo: function() {
     return wx.getStorageSync("userInfo");
   },
 

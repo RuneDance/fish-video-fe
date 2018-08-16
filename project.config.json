@@ -15,6 +15,11 @@
 	"appid": "wx62c1fc8d233ba2c9",
 	"projectname": "fish-video-fe",
 	"isGameTourist": false,
+	"scripts": {
+		"beforeCompile": "",
+		"beforePreview": "",
+		"beforeUpload": ".README.md"
+	},
 	"condition": {
 		"search": {
 			"current": -1,

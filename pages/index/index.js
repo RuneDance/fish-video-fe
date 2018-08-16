@@ -6,7 +6,6 @@ Page({
     totalPage: 1,
     page: 1,
     videoList: [],
-
     screenWidth: 350,
     serverUrl: "",
 
@@ -54,8 +53,6 @@ Page({
         wx.hideLoading();
         wx.hideNavigationBarLoading();
         wx.stopPullDownRefresh();
-
-        console.log(res.data);
 
         // 判断当前页page是否是第一页，如果是第一页，那么设置videoList为空
         if (page === 1) {

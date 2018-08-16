@@ -20,6 +20,7 @@ Page({
       });
       var serverUrl = app.serverUrl;
       var user = app.getGlobalUserInfo();
+      
       // 调用后端
       wx.request({
         url: serverUrl + '/bgm/list',
@@ -72,6 +73,7 @@ Page({
       // 上传短视频
       wx.showLoading({
         title: '上传中...',
+        mask: true
       })
       var serverUrl = app.serverUrl;
       // fixme 修改原有的全局对象为本地缓存

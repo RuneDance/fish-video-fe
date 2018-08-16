@@ -311,8 +311,13 @@ Page({
 
           me.setData({
             contentValue: "",
-            commentsList: []
+            commentsList: [],
+            placeholder: "",
+            replyFatherCommentId: "",
+            replyToUserId: "",
+            commentFocus: false
           });
+
 
           me.getCommentsList(1);
         }
