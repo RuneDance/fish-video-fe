@@ -8,7 +8,6 @@ Page({
     isMe: true,
     isFollow: false,
 
-
     videoSelClass: "video-info",
     isSelectedWork: "video-info-selected",
     isSelectedLike: "",
@@ -32,79 +31,77 @@ Page({
 
   },
 
-  // onLoad: function (params) {
-  //   var me = this;
+  onLoad: function(params) {
+    var me = this;
 
-  //   // var user = app.userInfo;
-  //   // fixme 修改原有的全局对象为本地缓存
-  //   var user = app.getGlobalUserInfo();
-  //   var userId = user.id;
+    // var user = app.userInfo;
+    // fixme 修改原有的全局对象为本地缓存
+    var user = app.getGlobalUserInfo();
+    var userId = user.id;
 
-  //   var publisherId = params.publisherId;
-  //   if (publisherId != null && publisherId != '' && publisherId != undefined && publisherId != userId) {
-  //     userId = publisherId;
-  //     me.setData({
-  //       isMe: false,
-  //       publisherId: publisherId,
-  //       serverUrl: app.serverUrl
-  //     })
-  //   }
-  //   me.setData({
-  //     userId: userId
-  //   })
+    var publisherId = params.publisherId;
+    if (publisherId != null && publisherId != '' && publisherId != undefined) {
+      userId = publisherId;
+      me.setData({
+        isMe: false,
+        publisherId: publisherId,
+        serverUrl: app.serverUrl
+      })
+    }
+    me.setData({
+      userId: userId
+    })
 
+    wx.showLoading({
+      title: '请等待...',
+    });
+    var serverUrl = app.serverUrl;
+    // 调用后端
+    wx.request({
+      url: serverUrl + '/user/query?userId=' + userId + "&fanId=" + user.id,
+      method: "POST",
+      header: {
+        'content-type': 'application/json', // 默认值
+        'headerUserId': user.id,
+        'headerUserToken': user.userToken
+      },
+      success: function(res) {
+        console.log(res.data);
+        wx.hideLoading();
+        if (res.data.status == 200) {
+          var userInfo = res.data.data;
+          var faceUrl = "../resource/images/noneface.png";
+          if (userInfo.faceImage != null && userInfo.faceImage != '' && userInfo.faceImage != undefined) {
+            faceUrl = serverUrl + userInfo.faceImage;
+          }
 
-  //   wx.showLoading({
-  //     title: '请等待...',
-  //   });
-  //   var serverUrl = app.serverUrl;
-  //   // 调用后端
-  //   wx.request({
-  //     url: serverUrl + '/user/query?userId=' + userId + "&fanId=" + user.id,
-  //     method: "POST",
-  //     header: {
-  //       'content-type': 'application/json', // 默认值
-  //       'headerUserId': user.id,
-  //       'headerUserToken': user.userToken
-  //     },
-  //     success: function (res) {
-  //       console.log(res.data);
-  //       wx.hideLoading();
-  //       if (res.data.status == 200) {
-  //         var userInfo = res.data.data;
-  //         var faceUrl = "../resource/images/noneface.png";
-  //         if (userInfo.faceImage != null && userInfo.faceImage != '' && userInfo.faceImage != undefined) {
-  //           faceUrl = serverUrl + userInfo.faceImage;
-  //         }
+          me.setData({
+            faceUrl: faceUrl,
+            fansCounts: userInfo.fansCounts,
+            followCounts: userInfo.followCounts,
+            receiveLikeCounts: userInfo.receiveLikeCounts,
+            nickname: userInfo.nickname,
+            isFollow: userInfo.follow
+          });
+        } else if (res.data.status == 502) {
+          wx.showToast({
+            title: res.data.msg,
+            duration: 3000,
+            icon: "none",
+            success: function() {
+              wx.redirectTo({
+                url: '../userLogin/login',
+              })
+            }
+          })
+        }
+      }
+    })
 
+    me.getMyVideoList(1);
+  },
 
-  //         me.setData({
-  //           faceUrl: faceUrl,
-  //           fansCounts: userInfo.fansCounts,
-  //           followCounts: userInfo.followCounts,
-  //           receiveLikeCounts: userInfo.receiveLikeCounts,
-  //           nickname: userInfo.nickname,
-  //           isFollow: userInfo.follow
-  //         });
-  //       } else if (res.data.status == 502) {
-  //         wx.showToast({
-  //           title: res.data.msg,
-  //           duration: 3000,
-  //           icon: "none",
-  //           success: function () {
-  //             wx.redirectTo({
-  //               url: '../userLogin/login',
-  //             })
-  //           }
-  //         })
-  //       }
-  //     }
-  //   })
-
-  //   me.getMyVideoList(1);
-  // },
-
-  followMe: function (e) {
+  followMe: function(e) {
     var me = this;
 
     var user = app.getGlobalUserInfo();
@@ -130,7 +127,7 @@ Page({
         'headerUserId': user.id,
         'headerUserToken': user.userToken
       },
-      success: function () {
+      success: function() {
         wx.hideLoading();
         if (followType == '1') {
           me.setData({
@@ -147,9 +144,7 @@ Page({
     })
   },
 
-
-
-  logout: function () {
+  logout: function() {
     // var user = app.userInfo;
     var user = app.getGlobalUserInfo();
 
@@ -164,7 +159,7 @@ Page({
       header: {
         'content-type': 'application/json' // 默认值
       },
-      success: function (res) {
+      success: function(res) {
         console.log(res.data);
         wx.hideLoading();
         if (res.data.status == 200) {
@@ -186,13 +181,13 @@ Page({
     })
   },
 
-  changeFace: function () {
+  changeFace: function() {
     var me = this;
     wx.chooseImage({
       count: 1,
       sizeType: ['compressed'],
       sourceType: ['album'],
-      success: function (res) {
+      success: function(res) {
         var tempFilePaths = res.tempFilePaths;
         console.log(tempFilePaths);
 
@@ -204,8 +199,7 @@ Page({
         var userInfo = app.getGlobalUserInfo();
 
         wx.uploadFile({
-          url: 'http://192.168.1.2:8080/u/uploadFace?userId=1001',
-          // url: serverUrl + '/user/uploadFace?userId=' + userInfo.id,  //app.userInfo.id,
+          url: serverUrl + '/user/uploadFace?userId=' + userInfo.id, //app.userInfo.id,
           filePath: tempFilePaths[0],
           name: 'file',
           header: {
@@ -213,7 +207,7 @@ Page({
             'headerUserId': userInfo.id,
             'headerUserToken': userInfo.userToken
           },
-          success: function (res) {
+          success: function(res) {
             var data = JSON.parse(res.data);
             console.log(data);
             wx.hideLoading();
@@ -237,7 +231,7 @@ Page({
                 title: res.data.msg,
                 duration: 2000,
                 icon: "none",
-                success: function () {
+                success: function() {
                   wx.redirectTo({
                     url: '../userLogin/login',
                   })
@@ -245,16 +239,13 @@ Page({
               });
 
             }
-
           }
         })
-
-
       }
     })
   },
 
-  uploadVideo: function () {
+  uploadVideo: function() {
     // fixme 视频上传复用
     // videoUtil.uploadVideo();
     // 以下是原来的代码，不删除，便于参照
@@ -262,7 +253,7 @@ Page({
 
     wx.chooseVideo({
       sourceType: ['album'],
-      success: function (res) {
+      success: function(res) {
         console.log(res);
 
         var duration = res.duration;
@@ -286,22 +277,19 @@ Page({
         } else {
           // 打开选择bgm的页面
           wx.navigateTo({
-            url: '../chooseBgm/chooseBgm?duration=' + duration
-            + "&tmpHeight=" + tmpHeight
-            + "&tmpWidth=" + tmpWidth
-            + "&tmpVideoUrl=" + tmpVideoUrl
-            + "&tmpCoverUrl=" + tmpCoverUrl
-            ,
+            url: '../chooseBgm/chooseBgm?duration=' + duration +
+              "&tmpHeight=" + tmpHeight +
+              "&tmpWidth=" + tmpWidth +
+              "&tmpVideoUrl=" + tmpVideoUrl +
+              "&tmpCoverUrl=" + tmpCoverUrl,
           })
         }
-
       }
     })
 
   },
 
-
-  doSelectWork: function () {
+  doSelectWork: function() {
     this.setData({
       isSelectedWork: "video-info-selected",
       isSelectedLike: "",
@@ -327,7 +315,7 @@ Page({
     this.getMyVideoList(1);
   },
 
-  doSelectLike: function () {
+  doSelectLike: function() {
     this.setData({
       isSelectedWork: "",
       isSelectedLike: "video-info-selected",
@@ -353,7 +341,7 @@ Page({
     this.getMyLikesList(1);
   },
 
-  doSelectFollow: function () {
+  doSelectFollow: function() {
     this.setData({
       isSelectedWork: "",
       isSelectedLike: "",
@@ -379,7 +367,7 @@ Page({
     this.getMyFollowList(1)
   },
 
-  getMyVideoList: function (page) {
+  getMyVideoList: function(page) {
     var me = this;
 
     // 查询视频信息
@@ -395,7 +383,7 @@ Page({
       header: {
         'content-type': 'application/json' // 默认值
       },
-      success: function (res) {
+      success: function(res) {
         console.log(res.data);
         var myVideoList = res.data.data.rows;
         wx.hideLoading();
@@ -411,7 +399,7 @@ Page({
     })
   },
 
-  getMyLikesList: function (page) {
+  getMyLikesList: function(page) {
     var me = this;
     var userId = me.data.userId;
 
@@ -425,7 +413,7 @@ Page({
       header: {
         'content-type': 'application/json' // 默认值
       },
-      success: function (res) {
+      success: function(res) {
         console.log(res.data);
         var likeVideoList = res.data.data.rows;
         wx.hideLoading();
@@ -441,7 +429,7 @@ Page({
     })
   },
 
-  getMyFollowList: function (page) {
+  getMyFollowList: function(page) {
     var me = this;
     var userId = me.data.userId;
 
@@ -455,7 +443,7 @@ Page({
       header: {
         'content-type': 'application/json' // 默认值
       },
-      success: function (res) {
+      success: function(res) {
         console.log(res.data);
         var followVideoList = res.data.data.rows;
         wx.hideLoading();
@@ -472,14 +460,14 @@ Page({
   },
 
   // 点击跳转到视频详情页面
-  showVideo: function (e) {
+  showVideo: function(e) {
 
     console.log(e);
 
     var myWorkFalg = this.data.myWorkFalg;
     var myLikesFalg = this.data.myLikesFalg;
     var myFollowFalg = this.data.myFollowFalg;
-    
+
     if (!myWorkFalg) {
       var videoList = this.data.myVideoList;
     } else if (!myLikesFalg) {
@@ -498,7 +486,7 @@ Page({
   },
 
   // 到底部后触发加载
-  onReachBottom: function () {
+  onReachBottom: function() {
     var myWorkFalg = this.data.myWorkFalg;
     var myLikesFalg = this.data.myLikesFalg;
     var myFollowFalg = this.data.myFollowFalg;

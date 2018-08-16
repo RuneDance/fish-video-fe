@@ -1,13 +1,12 @@
 const app = getApp()
 
 Page({
-  data: {
-  },
+  data: {},
 
-  onLoad: function (params) {
+  onLoad: function(params) {
     var me = this;
     var redirectUrl = params.redirectUrl;
-    // debugger;
+
     if (redirectUrl != null && redirectUrl != undefined && redirectUrl != '') {
       redirectUrl = redirectUrl.replace(/#/g, "?");
       redirectUrl = redirectUrl.replace(/@/g, "=");
@@ -17,7 +16,7 @@ Page({
   },
 
   // 登录  
-  doLogin: function (e) {
+  doLogin: function(e) {
     var me = this;
     var formObject = e.detail.value;
     var username = formObject.username;
@@ -45,7 +44,7 @@ Page({
         header: {
           'content-type': 'application/json' // 默认值
         },
-        success: function (res) {
+        success: function(res) {
           console.log(res.data);
           wx.hideLoading();
           if (res.data.status == 200) {
@@ -70,7 +69,7 @@ Page({
                 url: '../mine/mine',
               })
             }
-            
+
           } else if (res.data.status == 500) {
             // 失败弹出框
             wx.showToast({
@@ -84,7 +83,7 @@ Page({
     }
   },
 
-  goRegistPage:function() {
+  goRegistPage: function() {
     wx.redirectTo({
       url: '../userRegist/regist',
     })

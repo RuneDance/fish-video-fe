@@ -22,5 +22,4 @@ Page({
     console.log("暂停");
   }
 
-
 })
