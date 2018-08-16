@@ -9,7 +9,6 @@ Page({
 
   onLoad: function(params) {
     var me = this;
-    console.log(params);
     me.setData({
       videoParams: params
     });
@@ -30,7 +29,6 @@ Page({
         'headerUserToken': user.userToken
       },
       success: function(res) {
-        console.log(res.data);
         wx.hideLoading();
         if (res.data.status == 200) {
           var bgmList = res.data.data;
@@ -59,9 +57,6 @@ Page({
 
     var bgmId = e.detail.value.bgmId;
     var desc = e.detail.value.desc;
-
-    console.log("bgmId:" + bgmId);
-    console.log("desc:" + desc);
 
     var duration = me.data.videoParams.duration;
     var tmpHeight = me.data.videoParams.tmpHeight;
@@ -103,9 +98,10 @@ Page({
             title: '上传成功!~~',
             icon: "success"
           });
+          
           // 上传成功后跳回之前的页面
-          wx.navigateBack({
-            delta: 1
+          wx.redirectTo({
+            url: '../mine/mine',
           })
 
         } else if (res.data.status == 502) {
